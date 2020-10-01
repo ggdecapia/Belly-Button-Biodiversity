@@ -1,7 +1,13 @@
-function drawBarGraph(sampleID)
+function drawGraphs(sampleID)
 {
     console.log(`sampleID is ${sampleID}`);
+    
+    drawDemographics(sampleID);
+    drawBarPlot(sampleID);
+}
 
+function drawDemographics(sampleID)
+{
     d3.json("samples.json").then((importedData) => 
     { 
         function filterSample(sampleData)
@@ -10,11 +16,7 @@ function drawBarGraph(sampleID)
         }
         
         var sampleMetadata = importedData.metadata.filter(filterSample);
-
         console.log("sampleMetadata: ", sampleMetadata);
-
-        var table = d3.select("#summary-table");
-        var tbody = table.select("tbody");
 
         var divList = d3.select("#sample-metadata");
         var dataList;
@@ -33,13 +35,38 @@ function drawBarGraph(sampleID)
             });
         });
     });
+}
 
+function drawBarPlot(sampleID)
+{
+    d3.json("samples.json").then((importedData) => 
+    { 
+        function filterSample(sampleData)
+        {
+            return sampleData.id == sampleID;
+        }
+        
+        var sampleData = importedData.samples.filter(filterSample);
+        console.log("sampleData: ", sampleData);
+        
+        // select the element by class name
+        var barDiv = d3.select("#bar");
+        barDiv.html("");
+
+        console.log("sampleData.otu_ids ", sampleData[0].otu_ids);
+        console.log("sampleData[0].sample_values ", sampleData[0].sample_values);
+        console.log("sampleData[0].otu_labels ", sampleData[0].otu_labels);
+        otuIDs = sampleData[0].otu_ids;
+        sampleValues = sampleData[0].sample_values;
+        outLabels = sampleData[0].otu_labels;
+
+    });
 }
 
 function optionChanged(newSampleID)
 {   
     console.log(`user selected ${newSampleID}`);
-    drawBarGraph(newSampleID);
+    drawGraphs(newSampleID);
 }
 
 function InitDashboard()
@@ -64,7 +91,7 @@ function InitDashboard()
         var sampleID = sampleNames[0];
         console.log("sampleID: ", sampleID);
 
-        drawBarGraph(sampleID);
+        drawGraphs(sampleID);
 
     });       
 }

@@ -13,9 +13,6 @@ function drawBarGraph(sampleID)
 
         console.log("sampleMetadata: ", sampleMetadata);
 
-        var table = d3.select("#summary-table");
-        var tbody = table.select("tbody");
-
         var divList = d3.select("#sample-metadata");
         var dataList;
                     
@@ -27,13 +24,9 @@ function drawBarGraph(sampleID)
         dataList.append("li").text(`bbtype: ${sampleMetadata[0].bbtype}`);
         dataList.append("li").text(`wfreq: ${sampleMetadata[0].wfreq}`);
         
-        //d3.select("#stockInput").node().value = "";
-
         // select the tbody element by class name
         var divID = d3.select("#sample-metadata");
 
-        //divID.html("");
-    
         // read through the filtered data and write into rows/cells of the table
         sampleMetadata.forEach((filteredRow) => {
             var listdata = divID.append("tr");
