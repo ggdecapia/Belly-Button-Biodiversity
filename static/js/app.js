@@ -3,7 +3,9 @@ function drawGraphs(sampleID)
     console.log(`sampleID is ${sampleID}`);
     
     drawDemographics(sampleID);
+
     drawBarPlot(sampleID);
+
 }
 
 function drawDemographics(sampleID)
@@ -53,13 +55,37 @@ function drawBarPlot(sampleID)
         var barDiv = d3.select("#bar");
         barDiv.html("");
 
-        console.log("sampleData.otu_ids ", sampleData[0].otu_ids);
+        console.log("sampleData[0].otu_ids ", sampleData[0].otu_ids);
         console.log("sampleData[0].sample_values ", sampleData[0].sample_values);
         console.log("sampleData[0].otu_labels ", sampleData[0].otu_labels);
-        otuIDs = sampleData[0].otu_ids;
-        sampleValues = sampleData[0].sample_values;
-        outLabels = sampleData[0].otu_labels;
 
+        otuIDs = sampleData[0].otu_ids.slice(0,10);
+        sampleValues = sampleData[0].sample_values.slice(0,10).reverse();
+        otuLabels = sampleData[0].otu_labels.slice(0,10);
+
+        console.log("10 otu_ids ", otuIDs);
+        console.log("10 sample_values ", sampleValues);
+        console.log("10 otu_labels ", otuLabels);
+
+        var trace1 = {
+            x: sampleValues,
+            //y: otuIDs,            
+            text: otuLabels,
+            //name: "OTU Sample Values",
+            name: otuIDs,
+            type: "bar",
+            orientation: "h"
+          };
+
+          var data = [trace1];
+
+          // Apply the group barmode to the layout
+          var layout = {
+            title: (`Top 10 OTUs of Subject id ${sampleID}`)
+          };
+          
+          // Render the plot to the div tag with id "plot"
+          Plotly.newPlot("bar", data, layout); 
     });
 }
 
