@@ -3,8 +3,8 @@ function drawGraphs(sampleID)
     console.log(`sampleID is ${sampleID}`);
     
     drawDemographics(sampleID);
-
     drawBarPlot(sampleID);
+    drawBubbleChart(sampleID);
 
 }
 
@@ -18,19 +18,19 @@ function drawDemographics(sampleID)
         }
         
         var sampleMetadata = importedData.metadata.filter(filterSample);
-        console.log("sampleMetadata: ", sampleMetadata);
+        console.log("demo sampleMetadata: ", sampleMetadata);
 
-        var divList = d3.select("#sample-metadata");
-        var dataList;
+        //var demogDiv = d3.select("#sample-metadata");
+        //var dataList;
                     
         // select the element by class name
-        var divID = d3.select("#sample-metadata");
+        var demogDiv = d3.select("#sample-metadata");
 
-        divID.html("");
+        demogDiv.html("");
 
         // read through the filtered data and write into rows/cells of the table
         sampleMetadata.forEach((filteredRow) => {
-            var listdata = divID.append("tr");
+            var listdata = demogDiv.append("tr");
             Object.entries(filteredRow).forEach(([key, value]) => {
               var cell = listdata.append("tr");
               cell.text(`${key}:  ${value}`);
@@ -49,7 +49,7 @@ function drawBarPlot(sampleID)
         }
         
         var sampleData = importedData.samples.filter(filterSample);
-        console.log("sampleData: ", sampleData);
+        console.log("bar sampleData: ", sampleData);
         
         // select the element by class name
         var barDiv = d3.select("#bar");
@@ -63,9 +63,9 @@ function drawBarPlot(sampleID)
         sampleValues = sampleData[0].sample_values.slice(0,10).reverse();
         otuLabels = sampleData[0].otu_labels.slice(0,10);
 
-        console.log("10 otu_ids ", otuIDs);
-        console.log("10 sample_values ", sampleValues);
-        console.log("10 otu_labels ", otuLabels);
+        console.log("bar otu_ids ", otuIDs);
+        console.log("bar sample_values ", sampleValues);
+        console.log("bar otu_labels ", otuLabels);
 
         var trace1 = {
             x: sampleValues,
@@ -86,6 +86,56 @@ function drawBarPlot(sampleID)
           
           // Render the plot to the div tag with id "plot"
           Plotly.newPlot("bar", data, layout); 
+    });
+}
+
+function drawBubbleChart(sampleID)
+{
+    d3.json("samples.json").then((importedData) => 
+    { 
+        function filterSample(sampleData)
+        {
+            return sampleData.id == sampleID;
+        }
+        
+        var sampleData = importedData.samples.filter(filterSample);
+        console.log("bubble sampleData: ", sampleData);
+        
+        // select the element by class name
+        var bubbleDiv = d3.select("#bubble");
+        bubbleDiv.html("");
+
+        otuIDs = sampleData[0].otu_ids;
+        sampleValues = sampleData[0].sample_values;
+        otuLabels = sampleData[0].otu_labels;
+
+        console.log("bubble otu_ids ", otuIDs);
+        console.log("bubble sample_values ", sampleValues);
+        console.log("bubble otu_labels ", otuLabels);
+
+        var trace1 = {
+            x: otuIDs,
+            y: sampleValues,
+            mode: 'markers',
+            marker: {
+              size: sampleValues,
+              color: otuIDs,
+              text: otuLabels
+            }
+          };
+          
+          var data = [trace1];
+          
+          var layout = {
+            title: 'Marker Size'
+            //showlegend: false,
+            //height: 600,
+            //width: 600
+            //xaxis: "OTU ID"
+          };
+          
+        Plotly.newPlot('bubble', data, layout);
+
     });
 }
 
