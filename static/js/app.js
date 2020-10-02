@@ -5,6 +5,7 @@ function drawGraphs(sampleID)
     drawDemographics(sampleID);
     drawBarPlot(sampleID);
     drawBubbleChart(sampleID);
+    drawGaugeChart(sampleID);
 
 }
 
@@ -20,9 +21,6 @@ function drawDemographics(sampleID)
         var sampleMetadata = importedData.metadata.filter(filterSample);
         console.log("demo sampleMetadata: ", sampleMetadata);
 
-        //var demogDiv = d3.select("#sample-metadata");
-        //var dataList;
-                    
         // select the element by class name
         var demogDiv = d3.select("#sample-metadata");
 
@@ -69,9 +67,8 @@ function drawBarPlot(sampleID)
 
         var trace1 = {
             x: sampleValues,
-            //y: otuIDs,            
+            y: otuIDs.map(id => "OTU " + id.toString()),            
             text: otuLabels,
-            //name: "OTU Sample Values",
             name: otuIDs,
             type: "bar",
             orientation: "h"
@@ -139,89 +136,81 @@ function drawBubbleChart(sampleID)
     });
 }
 
+function drawGaugeChart(sampleID)
+{
+  d3.json("samples.json").then((importedData) => 
+  { 
+      function filterSample(sampleData)
+      {
+          return sampleData.id == sampleID;
+      }
+      
+      var sampleMetadata = importedData.metadata.filter(filterSample);
+      console.log("gauge sampleMetadata: ", sampleMetadata);
+
+      // getting the count to be used in for loop
+      var namesCount = importedData.names.length;
+      console.log("namesCount: ", namesCount);
+
+      var allWfreq = importedData.metadata.wfreq;
+      console.log("allWfreq: ", allWfreq);
+
+      var washingFreq = sampleMetadata[0].wfreq;
+      console.log("washingFreq: ", washingFreq);
+
+      var washingFreqArray = importedData.metadata;
+      console.log("washingFreqArray: ", washingFreqArray);
+
+      // select the element by class name
+      var gaugeDiv = d3.select("#gauge");
+
+      gaugeDiv.html("");
+
+      var data = [
+        {
+          domain: { x: [0, 1], y: [0, 1] },
+          value: washingFreq,
+          title: { text: "<span style='font-weight: bold'>Belly Button Washing Frequency</span><br>Scurbs per Week" },
+          type: "indicator",
+          mode: "gauge+number"
+        }
+      ];
+
+      var layout = { width: 600, height: 500, margin: { t: 0, b: 0 } };
+      Plotly.newPlot('gauge', data, layout);
+  });
+}
+
 function optionChanged(newSampleID)
 {   
     console.log(`user selected ${newSampleID}`);
     drawGraphs(newSampleID);
 }
 
+// this function performs the default display of dashboard landing page
 function InitDashboard()
 {
-    var selector = d3.select("#selDataset");
-
     d3.json("samples.json").then((importedData) => 
     { 
-        console.log(importedData);
+      var selector = d3.select("#selDataset");
+      console.log(importedData);
 
-        var sampleNames = importedData.names;
-        console.log("sampleNames: ", sampleNames);
+      var sampleNames = importedData.names;
+      console.log("sampleNames: ", sampleNames);
 
-        sampleNames.forEach((nameID) =>
-        {
-            selector.append("option")
-                .text(nameID)
-                .property("value", nameID);
-        });
+      sampleNames.forEach((nameID) =>
+      {
+        selector.append("option")
+          .text(nameID)
+          .property("value", nameID);
+      });
 
-        // default ID on landing page
-        var sampleID = sampleNames[0];
-        console.log("sampleID: ", sampleID);
+      // default ID on landing page
+      var sampleID = sampleNames[0];
+      console.log("sampleID: ", sampleID);
 
-        drawGraphs(sampleID);
-
+      drawGraphs(sampleID);
     });       
 }
 
 InitDashboard();
-
-/*d3.json("samples.json").then((importedData) => {
-        
-    var ids = data.names.metadata.id;
-    console.log(ids);
-   
-    //var names = data.dataset.data.map(sample => sample.names);
-    var names = data.map(sample => sample.names);
-    var metadata = data.map(sample => sample.metadata);
-    var samples = data.map(sample => sample.samples);
-    console.log("names: " ,names);
-    console.log("metadata: " ,metadata);
-    console.log("samples: " ,samples); 
-
-    // Sort the data array using the greekSearchResults value
-    data.sort(function(a, b) {
-      return parseFloat(b.greekSearchResults) - parseFloat(a.greekSearchResults);
-    });
-  
-    // Slice the first 10 objects for plotting
-    data = data.slice(0, 10);
-  
-    // Reverse the array due to Plotly's defaults
-    data = data.reverse();
-  
-     // Trace1 for the Greek Data
-    var trace1 = {
-      x: data.map(row => row.greekSearchResults),
-      y: data.map(row => row.greekName),
-      text: data.map(row => row.greekName),
-      name: "Greek",
-      type: "bar",
-      orientation: "h"
-    };
-  
-    // data
-    var chartData = [trace1];
-  
-    // Apply the group bar mode to the layout
-    var layout = {
-      title: "Greek gods search results",
-      margin: {
-        l: 100,
-        r: 100,
-        t: 100,
-        b: 100
-      }
-    };
-  
-    // Render the plot to the div tag with id "plot"
-    Plotly.newPlot("plot", chartData, layout); 
-  });*/
