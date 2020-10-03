@@ -105,10 +105,10 @@ function drawBarPlot(sampleID)
 
       var data = [trace1];
 
-      // define layout
+      // define bar plot layout
       var layout = 
       {
-        title: (`Top 10 OTUs of Subject id ${sampleID}`)
+        title: (`Top 10 OTUs of Subject ID No. ${sampleID}`)
       };
           
       // render the plot to the div tag associated to the bar graph div
@@ -156,10 +156,10 @@ function drawBubbleChart(sampleID)
           
       var data = [trace1];
       
-      // define the layout of the chart
+      // define the bubble chart layout
       var layout = 
       {
-        title: 'OTU ID Size Chart',
+        title: 'OTU Size Chart',
         xaxis: {title: 'OTU ID'},
         yaxis: {title: 'OTU Size'}
       };
@@ -199,13 +199,13 @@ function drawGaugeChart(sampleID)
       {
         domain: { x: [0, 1], y: [0, 1] },
         value: washingFreq,
-        title: { text: "<span style='font-weight: bold'>Belly Button Washing Frequency</span><br>Scurbs per Week" },
+        title: { text: "<span style='font-weight: bold'>Belly Button Washing Frequency</span><br>Scrubs per Week<br>" },
         type: "indicator",
         mode: "gauge+number"
       }
     ];
 
-    // define the layout
+    // define the gauge chart layout
     var layout = 
     { 
       width: 600, 
@@ -218,9 +218,9 @@ function drawGaugeChart(sampleID)
   });
 }
 
-// this function is called when test subject ID dorpdown value is changed
+// this function executes when the Test Subject ID No. dorpdown value is changed
 function optionChanged(newSampleID)
 {   
-  // calls the function to draw the graphs of the newly selected subject ID
+  // calls the function to draw the graphs corresponding to the newly selected subject ID
   drawAllGraphs(newSampleID);
 }
