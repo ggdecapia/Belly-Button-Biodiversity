@@ -218,7 +218,7 @@ function drawGaugeChart(sampleID)
   });
 }
 
-// this function executes when the Test Subject ID No. dorpdown value is changed
+// this function executes when the Test Subject ID No. dropdown value is changed
 function optionChanged(newSampleID)
 {   
   // calls the function to draw the graphs corresponding to the newly selected subject ID
